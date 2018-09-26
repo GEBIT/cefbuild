@@ -1,4 +1,4 @@
-set /p BUILD=<..\branch.txt
+set /p BRANCH=<..\branch.txt
 
 set "GN_DEFINES=use_allocator=none is_official_build=true use_sysroot=true symbol_level=0"
 set GYP_MSVS_VERSION=2017
