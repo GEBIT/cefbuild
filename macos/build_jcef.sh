@@ -64,6 +64,7 @@ xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj -scheme ALL_BUILD -configurat
 
 echo "Copying JCEF binaries to output directories"
 cp $JCEF_BUILD_DIR/native/Release/jcef.jar $OUTPUT_DIR/jcef-classes.jar
+cp $JCEF_BUILD_DIR/native/Release/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
 cp $JCEF_BUILD_DIR/native/Release/libjcef.dylib $JCEF_BINARIES_DIR/
 cp "$JCEF_BUILD_DIR/native/Release/jcef Helper.app" $JCEF_BINARIES_DIR/
 
