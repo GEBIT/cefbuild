@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")"
 
 read -r BRANCH<../branch.txt
 export GN_DEFINES="use_allocator=none is_official_build=true use_sysroot=true symbol_level=0"
