@@ -7,7 +7,7 @@ VSDEVCMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Comm
 
 read -r BRANCH<../branch.txt
 
-FIND_COMMAND="find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name 'cef_binary_3.$BRANCH.*_windows64'"
+FIND_COMMAND="find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name 'cef_binary_*.$BRANCH.*_windows64'"
 CEF_RELEASE_DIR=`eval $FIND_COMMAND`
 
 if [ ! -d "$CEF_RELEASE_DIR" ]; then
