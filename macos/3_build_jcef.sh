@@ -5,7 +5,7 @@ BASEDIR=/Users/cefbuild/code/
 
 read -r BRANCH<../branch.txt
 
-CEF_RELEASE_DIR=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_3.$BRANCH.*_macosx64"`
+CEF_RELEASE_DIR=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosx64"`
 
 if [ ! -d "$CEF_RELEASE_DIR" ]; then
     echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
