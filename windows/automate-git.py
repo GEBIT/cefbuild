@@ -23,7 +23,7 @@ import zipfile
 depot_tools_url = 'http://chromium.googlesource.com/chromium/tools/depot_tools.git'
 depot_tools_archive_url = 'http://storage.googleapis.com/chrome-infra/depot_tools.zip'
 
-cef_git_url = 'https://github.com/S1artie/cef.git'
+cef_git_url = 'https://github.com/GEBIT/cef.git'
 
 chromium_channel_json_url = 'https://omahaproxy.appspot.com/all.json'
 
