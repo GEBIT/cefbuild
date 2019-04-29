@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-BASEDIR=/home/cefbuild/code/
+BASEDIR=./../../
 
 read -r BRANCH<../branch.txt
 

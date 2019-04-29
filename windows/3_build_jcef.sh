@@ -2,7 +2,7 @@
 cd "$(dirname "$0")"
 
 # This builds JCEF and is intended to be executed in a GIT Bash on Windows
-BASEDIR=/c/CEF/
+BASEDIR=./../../
 VSDEVCMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"
 
 read -r BRANCH<../branch.txt

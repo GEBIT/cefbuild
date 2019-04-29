@@ -2,7 +2,7 @@
 cd "$(dirname "$0")"
 
 # This updates JCEF and is intended to be executed in a GIT Bash on Windows
-BASEDIR=/c/CEF/
+BASEDIR=./../../
 
 read -r BRANCH<../branch.txt
 
