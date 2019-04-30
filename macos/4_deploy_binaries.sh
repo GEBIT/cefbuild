@@ -44,4 +44,4 @@ fi
 VERSION=$CEF_CLEAN_VERSION-$QUALIFIER
 
 echo "Deploying JCEF binary package for MacOS in version $VERSION to Nexus"
-mvn deploy:deploy-file -DartifactId=jcef-binaries-macos -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION
+mvn -gs ../../mvn-settings/settings.xml deploy:deploy-file -DartifactId=jcef-binaries-macos -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION

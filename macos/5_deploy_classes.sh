@@ -44,4 +44,4 @@ fi
 VERSION=$CEF_CLEAN_VERSION-$QUALIFIER
 
 echo "Deploying JCEF classes package for MacOS to Nexus"
-mvn deploy:deploy-file -DartifactId=jcef-classes -Dfile=$OUTPUT_DIR/jcef-classes.jar -Dsources=$OUTPUT_DIR/jcef-classes-sources.jar -Dversion=$VERSION
+mvn -gs ../../mvn-settings/settings.xml deploy:deploy-file -DartifactId=jcef-classes -Dfile=$OUTPUT_DIR/jcef-classes.jar -Dsources=$OUTPUT_DIR/jcef-classes-sources.jar -Dversion=$VERSION
