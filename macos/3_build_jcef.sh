@@ -83,4 +83,7 @@ unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-macosx-universal.jar "
 echo "Packaging jcef-binaries-macos"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-macos.jar ./*"
 
+echo "Extracting version number from version header file"
+cat $JCEF_DIR/native/jcef_version.h | grep "define JCEF_VERSION" | cut -d'"' -f2 | cut -d'+' -f1 > $OUTPUT_DIR/jcef_version.txt
+
 echo "All done!"

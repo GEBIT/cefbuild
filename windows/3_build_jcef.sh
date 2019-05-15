@@ -91,5 +91,7 @@ echo "Packaging jcef-binaries-linux"
 # zip command isn't even present in GIT Bash on Windows :( so we'll use a powershell workaround
 bash -l -c "cd $JCEF_BINARIES_DIR && powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('.', '../jcef-binaries-windows.jar'); }\""
 
+echo "Extracting version number from version header file"
+cat $JCEF_DIR/native/jcef_version.h | grep "define JCEF_VERSION" | cut -d'"' -f2 | cut -d'+' -f1 > $OUTPUT_DIR/jcef_version.txt
 
 echo "All done!"
