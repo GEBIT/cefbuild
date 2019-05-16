@@ -10,5 +10,6 @@ curl -o automate-git.py https://bitbucket.org/chromiumembedded/cef/raw/master/to
 # But since the CEF repository URL is part of the script, we must replace that dynamically
 sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/" automate-git.py
 
-python automate-git.py --no-debug-build --minimal-distrib --client-distrib --force-clean --x64-build --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
+# For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
+python automate-git.py --no-debug-build --minimal-distrib --client-distrib --force-clean --x64-build --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
