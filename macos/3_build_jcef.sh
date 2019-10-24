@@ -19,7 +19,13 @@ else
     exit
 fi
 
-echo "Found binary CEF distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+if [ -d "$CEF_RELEASE_DIR/Debug" ]; then
+    BUILDTYPE="Debug"
+else
+    BUILDTYPE="Release"
+fi
+
+echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-macos
@@ -60,7 +66,7 @@ if [ ! -d $JCEF_BUILD_DIR/jcef.xcodeproj ]; then
 fi
 
 echo "Building JCEF"
-xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj -scheme ALL_BUILD -configuration Release
+xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj -scheme ALL_BUILD -configuration $BUILDTYPE
 if [[ $? == 0 ]]; then
     echo "Successful build!"
 else
@@ -69,10 +75,10 @@ else
 fi
 
 echo "Copying JCEF binaries to output directories"
-cp $JCEF_BUILD_DIR/native/Release/jcef.jar $OUTPUT_DIR/jcef-classes.jar
-cp $JCEF_BUILD_DIR/native/Release/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
-cp $JCEF_BUILD_DIR/native/Release/libjcef.dylib $JCEF_BINARIES_DIR/
-cp -r "$JCEF_BUILD_DIR/native/Release/jcef Helper.app" $JCEF_BINARIES_DIR/
+cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef.jar $OUTPUT_DIR/jcef-classes.jar
+cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
+cp $JCEF_BUILD_DIR/native/$BUILDTYPE/libjcef.dylib $JCEF_BINARIES_DIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper.app" $JCEF_BINARIES_DIR/
 
 echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl

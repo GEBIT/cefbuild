@@ -22,7 +22,15 @@ else
     exit
 fi
 
-echo "Found binary CEF distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+if [ -d "$CEF_RELEASE_DIR/Debug" ]; then
+    BUILDTYPE="Debug"
+    BUILDTYPE_LOWERCASE="debug"
+else
+    BUILDTYPE="Release"
+    BUILDTYPE_LOWERCASE="debug"
+fi
+
+echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-windows
@@ -65,7 +73,7 @@ if [ ! -f  $JCEF_BUILD_DIR/jcef.sln ]; then
 fi
 
 echo "Building JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe /C '\"\"$VSDEVCMD_BAT\" & msbuild jcef.sln /p:configuration=release\"'"  
+bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe /C '\"\"$VSDEVCMD_BAT\" & msbuild jcef.sln /p:configuration=$BUILDTYPE_LOWERCASE\"'"  
 
 if [[ $? == 0 ]]; then
     echo "Successful build!"

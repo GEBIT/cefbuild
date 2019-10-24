@@ -7,19 +7,19 @@ cd "$(dirname "$0")"
 # incremental - will allow the build system to only build whatever it thinks has changed since last build
 
 if [ "$1" == "debug" ] || [ "$2" == "debug" ]; then
-	BUILDTYPE="debug"
-	BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
-	AUTOMATE_FLAGS="--no-release-build"
+    BUILDTYPE="debug"
+    BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
+    AUTOMATE_FLAGS="--no-release-build"
 else
-	BUILDTYPE="release"
-	BUILD_GN="is_official_build=true symbol_level=0"
-	AUTOMATE_FLAGS="--no-debug-build"
+    BUILDTYPE="release"
+    BUILD_GN="is_official_build=true symbol_level=0"
+    AUTOMATE_FLAGS="--no-debug-build"
 fi
 if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
-	BUILDTYPE="an incremental $BUILDTYPE"
+    BUILDTYPE="an incremental $BUILDTYPE"
 else
-	BUILDTYPE="a full $BUILDTYPE"
-	AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
+    BUILDTYPE="a full $BUILDTYPE"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
 fi
 
 read -r BRANCH<../branch.txt
