@@ -19,7 +19,13 @@ else
     exit
 fi
 
-echo "Found binary CEF distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+if [ -d "$CEF_RELEASE_DIR/Debug" ]; then
+    BUILDTYPE="Debug"
+else
+    BUILDTYPE="Release"
+fi
+
+echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-linux
@@ -54,7 +60,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
 
 if [ ! -f  $JCEF_BUILD_DIR/Makefile ]; then
     echo "ERROR: Did not find the generated JCEF Makefile"
@@ -75,7 +81,7 @@ echo "Copying JCEF binaries to output directory"
 # JCEF Classes are deliberately not copied here, as those must be built only on the MacOS build machine. The classes are
 # generally cross-platform, except for one Mac-specific class which can only be built on MacOS, thus MacOS is the designated
 # build platform for the JCEF jar file.
-cp -r $JCEF_BUILD_DIR/native/Release/* $JCEF_SUBDIR/
+cp -r $JCEF_BUILD_DIR/native/$BUILDTYPE/* $JCEF_SUBDIR/
 
 echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl
