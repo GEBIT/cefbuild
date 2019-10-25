@@ -27,7 +27,7 @@ if [ -d "$CEF_RELEASE_DIR/Debug" ]; then
     BUILDTYPE_LOWERCASE="debug"
 else
     BUILDTYPE="Release"
-    BUILDTYPE_LOWERCASE="debug"
+    BUILDTYPE_LOWERCASE="release"
 fi
 
 echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
