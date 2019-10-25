@@ -39,3 +39,4 @@ sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/
 # For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
 python automate-git.py $AUTOMATE_FLAGS --x64-build --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
+echo "Finished performing $BUILDTYPE build of branch $BRANCH."
