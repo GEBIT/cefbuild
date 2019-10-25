@@ -34,7 +34,7 @@ if [ ! -f "$JCEF_VERSION_FILE" ]; then
 fi
 
 # Really big binary is a safe indication of a debug build
-if [ $(stat -c%s "$OUTPUT_DIR/jcef-binaries-windows/jcef/libcef.dll") > 1000000000 ]; then
+if [ $(stat -c%s "$OUTPUT_DIR/jcef-binaries-windows/jcef/libcef.dll") -gt 1000000000 ]; then
     BUILD_TYPE="Debug"
 else
     BUILD_TYPE="Release"
