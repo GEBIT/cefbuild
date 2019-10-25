@@ -38,4 +38,8 @@ sed -i "" "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.gi
 
 python automate-git.py $AUTOMATE_FLAGS --x64-build --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
-echo "Finished performing $BUILDTYPE build of branch $BRANCH."
+if [ $? -eq 0 ]; then
+    echo "Finished performing $BUILDTYPE build of branch $BRANCH."
+else
+    echo "Failed performing $BUILDTYPE build of branch $BRANCH."
+fi
