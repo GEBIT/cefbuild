@@ -33,10 +33,18 @@ if [ ! -f "$JCEF_VERSION_FILE" ]; then
     echo "ERROR: Did not find a JCEF version file"
 fi
 
+# Really big binary is a safe indication of a debug build
+if [ $(stat -c%s "$OUTPUT_DIR/jcef-binaries-windows/jcef/libcef.dll") > 1000000000 ]; then
+    BUILD_TYPE="Debug"
+else
+    BUILD_TYPE="Release"
+fi
+
 JCEF_RELEASE_VERSION=$(cat $JCEF_VERSION_FILE)
 
 echo "Found CEF version $CEF_RELEASE_VERSION (cleaned-up: $CEF_CLEAN_VERSION)"
 echo "Found JCEF version $JCEF_RELEASE_VERSION which will be our artifact version"
+echo "The build to be packaged is a $BUILD_TYPE build"
 
 if [ ! -f "$OUTPUT_DIR/jcef-binaries-windows.jar" ]; then
     echo "ERROR: Did not find jcef-binaries-windows.jar"
@@ -48,6 +56,10 @@ read QUALIFIER
 if [ -z "$QUALIFIER" ]; then
     echo "ERROR: No qualifier was provided"
     exit
+fi
+
+if [ $BUILD_TYPE == "Debug" ]; then
+    read -p "ATTENTION: You are about to deploy a DEBUG BUILD! These are very big, slow, and NOT SUITABLE FOR ANY USE except for CEF/JCEF native library debugging purposes. Are you sure that you want to deploy this build under qualifier $QUALIFIER? Hit Enter to continue, CTRL-C to abort!"
 fi
 
 VERSION=$JCEF_RELEASE_VERSION-$QUALIFIER
