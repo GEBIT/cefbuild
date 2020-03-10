@@ -21,6 +21,12 @@ else
     BUILDTYPE="a full $BUILDTYPE"
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
 fi
+if [ "$1" == "x86" ] || [ "$2" == "x86" ]; then
+    BUILDTYPE="$BUILDTYPE 32-bit"
+else
+    BUILDTYPE="$BUILDTYPE 64-bit"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --x64-build"
+fi
 
 read -r BRANCH<../branch.txt
 echo "You are about to perform $BUILDTYPE build of branch $BRANCH."
@@ -37,7 +43,7 @@ curl -o automate-git.py https://bitbucket.org/chromiumembedded/cef/raw/master/to
 sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/" automate-git.py
 
 # For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
-python automate-git.py $AUTOMATE_FLAGS --x64-build --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
+python automate-git.py $AUTOMATE_FLAGS --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
 if [ $? -eq 0 ]; then
     echo "Finished performing $BUILDTYPE build of branch $BRANCH."
