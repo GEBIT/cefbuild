@@ -87,7 +87,9 @@ echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl
 mkdir $JOGL_DIR
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-macosx-universal.jar "*.jnilib" -d $JOGL_DIR/
+unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-macosx-universal.jar "*.dylib" -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-macosx-universal.jar "*.jnilib" -d $JOGL_DIR/
+unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-macosx-universal.jar "*.dylib" -d $JOGL_DIR/
 
 echo "Packaging jcef-binaries-macos"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-macos.jar ./*"
