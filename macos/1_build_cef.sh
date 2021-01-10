@@ -1,12 +1,13 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-# By default, this script will build full release builds.
+# By default, this script will build full x64 arch release builds.
 # This can be modified by two possible parameters provided to this script:
 # debug - will cause a debug build to be made (with full debug symbols)
 # incremental - will allow the build system to only build whatever it thinks has changed since last build
+# arm64 - build for arm64 arch instead of x64 arch
 
-if [ "$1" == "debug" ] || [ "$2" == "debug" ]; then
+if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ]; then
     BUILDTYPE="debug"
     BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
     AUTOMATE_FLAGS="--no-release-build"
@@ -15,15 +16,24 @@ else
     BUILD_GN="is_official_build=true symbol_level=0"
     AUTOMATE_FLAGS="--no-debug-build"
 fi
-if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
+if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ]; then
     BUILDTYPE="an incremental $BUILDTYPE"
 else
     BUILDTYPE="a full $BUILDTYPE"
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
 fi
+if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ]; then
+    BUILDTYPE="$BUILDTYPE build for arm64"
+    export CEF_ENABLE_ARM64=1
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --arm64-build"
+else
+    BUILDTYPE="$BUILDTYPE build for x64"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --x64-build"
+fi
+
 
 read -r BRANCH<../branch.txt
-echo "You are about to perform $BUILDTYPE build of branch $BRANCH."
+echo "You are about to perform $BUILDTYPE of branch $BRANCH."
 read -p "Hit ENTER to start!"
 
 rm -rf ./out
@@ -36,10 +46,10 @@ curl -o automate-git.py https://bitbucket.org/chromiumembedded/cef/raw/master/to
 # But since the CEF repository URL is part of the script, we must replace that dynamically
 sed -i "" "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/" automate-git.py
 
-python3 automate-git.py $AUTOMATE_FLAGS --x64-build --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
+python3 automate-git.py $AUTOMATE_FLAGS --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
 if [ $? -eq 0 ]; then
-    echo "Finished performing $BUILDTYPE build of branch $BRANCH."
+    echo "Finished performing $BUILDTYPE of branch $BRANCH."
 else
-    echo "Failed performing $BUILDTYPE build of branch $BRANCH."
+    echo "Failed performing $BUILDTYPE of branch $BRANCH."
 fi

@@ -5,14 +5,29 @@ BASEDIR=./../../
 
 read -r BRANCH<../branch.txt
 
-CEF_RELEASE_DIR=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosx64"`
+CEF_RELEASE_DIR_X64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosx64"`
+CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosarm64"`
 
-if [ ! -d "$CEF_RELEASE_DIR" ]; then
-    echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
-    exit
+if [ ! -d "$CEF_RELEASE_DIR_X64" ]; then
+    if [ ! -d "$CEF_RELEASE_DIR_ARM64" ]; then
+        echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
+        exit
+    else
+        echo "Found arm64 CEF build"
+        ARCH_PARAM="-DPROJECT_ARCH=arm64"
+        ARCH_NAME="arm64"
+        XCODE_PARAM="-target ALL_BUILD"
+        CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
+    fi
+else
+    echo "Found x64 CEF build"
+    ARCH_PARAM="-DPROJECT_ARCH=x86_64"
+    ARCH_NAME="x64"
+    XCODE_PARAM="-scheme ALL_BUILD"
+    CEF_RELEASE_DIR=$CEF_RELEASE_DIR_X64
 fi
 
-if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_macosx64 ]]; then
+if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_macos ]]; then
     CEF_RELEASE_VERSION=${BASH_REMATCH[1]}
 else
     echo "ERROR: Failed to extract CEF version number"
@@ -58,7 +73,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmake -G Xcode -DPROJECT_ARCH=x86_64 -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $JCEF_BUILD_DIR && cmake -G Xcode $ARCH_PARAM -DCEF_VERSION=$CEF_RELEASE_VERSION .."
 
 if [ ! -d $JCEF_BUILD_DIR/jcef.xcodeproj ]; then
     echo "ERROR: Did not find the generated JCEF XCode Project"
@@ -66,7 +81,7 @@ if [ ! -d $JCEF_BUILD_DIR/jcef.xcodeproj ]; then
 fi
 
 echo "Building JCEF"
-xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj -scheme ALL_BUILD -configuration $BUILDTYPE
+xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj $XCODE_PARAM -configuration $BUILDTYPE
 if [[ $? == 0 ]]; then
     echo "Successful build!"
 else
