@@ -6,14 +6,14 @@ OUTPUT_DIR=./out
 
 read -r BRANCH<../branch.txt
 
-CEF_RELEASE_DIR=`find $OUTPUT_DIR -type d -name "cef_binary_*.$BRANCH.*_macosx64"`
+CEF_RELEASE_DIR=`find $OUTPUT_DIR -type d -name "cef_binary_*.$BRANCH.*_macos*"`
 
 if [ ! -d "$CEF_RELEASE_DIR" ]; then
     echo "ERROR: Did not find a matching CEF branch release build in out directory"
     exit
 fi
 
-if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_macosx64 ]]; then
+if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_macos.* ]]; then
     CEF_RELEASE_VERSION=${BASH_REMATCH[1]}
 else
     echo "ERROR: Failed to extract CEF version number"
