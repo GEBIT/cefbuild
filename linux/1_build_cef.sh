@@ -17,6 +17,7 @@ else
 fi
 if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
     BUILDTYPE="an incremental $BUILDTYPE"
+    export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
