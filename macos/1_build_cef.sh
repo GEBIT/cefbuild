@@ -21,7 +21,7 @@ if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremen
     export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
-    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean --force-clean-deps"
 fi
 if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ]; then
     BUILDTYPE="$BUILDTYPE build for arm64"

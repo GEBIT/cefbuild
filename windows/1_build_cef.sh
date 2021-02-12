@@ -22,7 +22,7 @@ if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
     export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
-    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean --force-clean-deps"
 fi
 
 read -r BRANCH<../branch.txt

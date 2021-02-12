@@ -20,7 +20,7 @@ if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
     export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
-    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean --force-clean-deps"
 fi
 if [ "$1" == "x86" ] || [ "$2" == "x86" ]; then
     BUILDTYPE="$BUILDTYPE 32-bit"
