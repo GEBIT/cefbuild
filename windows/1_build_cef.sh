@@ -7,8 +7,9 @@ cd "$(dirname "$0")"
 # This can be modified by two possible parameters provided to this script:
 # debug - will cause a debug build to be made (with full debug symbols)
 # incremental - will allow the build system to only build whatever it thinks has changed since last build
+# clean - will cause all Chromium dependencies to be wiped and redownloaded (use in case of dependency problems)
 
-if [ "$1" == "debug" ] || [ "$2" == "debug" ]; then
+if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ]; then
     BUILDTYPE="debug"
     BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
     AUTOMATE_FLAGS="--no-release-build"
@@ -17,16 +18,22 @@ else
     BUILD_GN="is_official_build=true symbol_level=1" # Symbol level 0 is not possible on Windows
     AUTOMATE_FLAGS="--no-debug-build"
 fi
-if [ "$1" == "incremental" ] || [ "$2" == "incremental" ]; then
+if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ]; then
     BUILDTYPE="an incremental $BUILDTYPE"
     export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
-    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean --force-clean-deps"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
+fi
+if [ "$1" == "clean" ] || [ "$2" == "clean" ] || [ "$3" == "clean" ]; then
+    BUILDTYPE="$BUILDTYPE build with clean dependencies"
+	  AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean-deps"
+else
+    BUILDTYPE="$BUILDTYPE build"
 fi
 
 read -r BRANCH<../branch.txt
-echo "You are about to perform $BUILDTYPE build of branch $BRANCH."
+echo "You are about to perform $BUILDTYPE of branch $BRANCH."
 read -p "Hit ENTER to start!"
 
 rm -rf ./out

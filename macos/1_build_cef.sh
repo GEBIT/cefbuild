@@ -5,9 +5,10 @@ cd "$(dirname "$0")"
 # This can be modified by two possible parameters provided to this script:
 # debug - will cause a debug build to be made (with full debug symbols)
 # incremental - will allow the build system to only build whatever it thinks has changed since last build
+# clean - will cause all Chromium dependencies to be wiped and redownloaded (use in case of dependency problems)
 # arm64 - build for arm64 arch instead of x64 arch
 
-if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ]; then
+if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ] || [ "$4" == "debug" ]; then
     BUILDTYPE="debug"
     BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
     AUTOMATE_FLAGS="--no-release-build"
@@ -16,19 +17,25 @@ else
     BUILD_GN="is_official_build=true symbol_level=0"
     AUTOMATE_FLAGS="--no-debug-build"
 fi
-if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ]; then
+if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ] || [ "$4" == "incremental" ]; then
     BUILDTYPE="an incremental $BUILDTYPE"
     export CEF_SKIP_PATCHES=true
 else
     BUILDTYPE="a full $BUILDTYPE"
-    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean --force-clean-deps"
+    AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean"
 fi
-if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ]; then
-    BUILDTYPE="$BUILDTYPE build for arm64"
+if [ "$1" == "clean" ] || [ "$2" == "clean" ] || [ "$3" == "clean" ] || [ "$4" == "clean" ]; then
+    BUILDTYPE="$BUILDTYPE build with clean dependencies"
+	  AUTOMATE_FLAGS="$AUTOMATE_FLAGS --force-clean-deps"
+else
+    BUILDTYPE="$BUILDTYPE build"
+fi
+if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ] || [ "$4" == "arm64" ]; then
+    BUILDTYPE="$BUILDTYPE for arm64"
     export CEF_ENABLE_ARM64=1
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --arm64-build"
 else
-    BUILDTYPE="$BUILDTYPE build for x64"
+    BUILDTYPE="$BUILDTYPE for x64"
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --x64-build"
 fi
 
