@@ -54,7 +54,7 @@ curl -o automate-git.py https://bitbucket.org/chromiumembedded/cef/raw/master/to
 sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/" automate-git.py
 
 # For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
-python automate-git.py $AUTOMATE_FLAGS --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
+python3 automate-git.py $AUTOMATE_FLAGS --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
 if [ $? -eq 0 ]; then
     echo "Finished performing $BUILDTYPE build of branch $BRANCH."
