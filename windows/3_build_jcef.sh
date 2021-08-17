@@ -3,7 +3,7 @@ cd "$(dirname "$0")"
 
 # This builds JCEF and is intended to be executed in a GIT Bash on Windows
 BASEDIR=./../../
-VSDEVCMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"
+VSDEVCMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
 
 read -r BRANCH<../branch.txt
 
@@ -65,7 +65,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe /C '\"\"$VSDEVCMD_BAT\" & cmake -G \"Visual Studio 15 Win64\" -D CEF_VERSION=$CEF_RELEASE_VERSION ..\"'"
+bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe /C '\"\"$VSDEVCMD_BAT\" & cmake -G \"Visual Studio 16 2019\" -D CEF_VERSION=$CEF_RELEASE_VERSION ..\"'"
 
 if [ ! -f  $JCEF_BUILD_DIR/jcef.sln ]; then
     echo "ERROR: Did not find the generated JCEF Solution File"
