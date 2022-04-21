@@ -65,4 +65,20 @@ fi
 VERSION=$JCEF_RELEASE_VERSION-$QUALIFIER
 
 echo "Deploying JCEF binary package for Windows in version $VERSION to Nexus"
-mvn deploy:deploy-file -DartifactId=jcef-binaries-windows -Dfile=$OUTPUT_DIR/jcef-binaries-windows.jar -Dversion=$VERSION
+
+echo -n "Please enter the username: "
+read NEXUS_USER
+if [ -z "$NEXUS_USER" ]; then
+    echo "ERROR: No username was provided"
+    exit
+fi
+
+echo -n "Please enter the password: "
+read -s NEXUS_PASS
+echo ""
+if [ -z "$NEXUS_PASS" ]; then
+    echo "ERROR: No password was provided"
+    exit
+fi
+
+mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-windows -Dfile=$OUTPUT_DIR/jcef-binaries-windows.jar -Dversion=$VERSION
