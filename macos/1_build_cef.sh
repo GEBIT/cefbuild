@@ -10,11 +10,11 @@ cd "$(dirname "$0")"
 
 if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ] || [ "$4" == "debug" ]; then
     BUILDTYPE="debug"
-    BUILD_GN="is_official_build=false is_debug=true symbol_level=2"
+    BUILD_GN="is_official_build=false is_debug=true symbol_level=2 chrome_pgo_phase=0"
     AUTOMATE_FLAGS="--no-release-build"
 else
     BUILDTYPE="release"
-    BUILD_GN="is_official_build=true symbol_level=0"
+    BUILD_GN="is_official_build=true symbol_level=0 chrome_pgo_phase=0"
     AUTOMATE_FLAGS="--no-debug-build"
 fi
 if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ] || [ "$4" == "incremental" ]; then
