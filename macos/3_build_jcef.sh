@@ -81,7 +81,7 @@ if [ ! -d $JCEF_BUILD_DIR/jcef.xcodeproj ]; then
 fi
 
 echo "Building JCEF"
-xcodebuild -project $JCEF_BUILD_DIR/jcef.xcodeproj $XCODE_PARAM -configuration $BUILDTYPE
+xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -project $JCEF_BUILD_DIR/jcef.xcodeproj $XCODE_PARAM -configuration $BUILDTYPE
 if [[ $? == 0 ]]; then
     echo "Successful build!"
 else
