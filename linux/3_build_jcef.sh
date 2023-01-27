@@ -7,18 +7,30 @@ read -r BRANCH<../branch.txt
 
 CEF_RELEASE_DIR_64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux64"`
 CEF_RELEASE_DIR_32=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux32"`
+CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxarm64"`
+
 
 if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
     if [ ! -d "$CEF_RELEASE_DIR_32" ]; then
-        echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
-        exit 1
+        if [ ! -d "$CEF_RELEASE_DIR_ARM64" ]; then
+            echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
+            exit 1
+        else
+            echo "Found arm64 CEF build"
+            BITNESS=64
+            JOGAMP_ARCH=aarch64
+            CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
+            CMAKE_ARGS="-DPROJECT_ARCH=arm64"
+        fi
     else
+        echo "Found x86 CEF build"
         CEF_RELEASE_DIR=$CEF_RELEASE_DIR_32
         BITNESS=32
         JOGAMP_ARCH=i586
         CMAKE_ARGS="-DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DPROJECT_ARCH=x86"
     fi
 else
+    echo "Found x64 CEF build"
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_64
     BITNESS=64
     JOGAMP_ARCH=amd64
@@ -37,7 +49,7 @@ else
     BUILDTYPE="Release"
 fi
 
-echo "Found binary $BITNESS bit CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+echo "Found binary $BITNESS bit $JOGAMP_ARCH CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
 if ! [ -x "$(command -v docker)" ]; then
     if [ $BITNESS == 64 ]; then
