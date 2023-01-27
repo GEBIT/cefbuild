@@ -7,7 +7,7 @@ read -r BRANCH<../branch.txt
 
 CEF_RELEASE_DIR_64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux64"`
 CEF_RELEASE_DIR_32=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux32"`
-CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxarm64"`
+CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxaarch64"`
 
 
 if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
