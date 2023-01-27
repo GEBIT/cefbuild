@@ -17,7 +17,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
             exit 1
         else
             echo "Found arm64 CEF build"
-            CEF_PLATFORM=linux64
+            CEF_PLATFORM=linuxarm64
             JOGAMP_ARCH=aarch64
             CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
             CMAKE_ARGS="-DPROJECT_ARCH=arm64"
@@ -32,7 +32,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
 else
     echo "Found x64 CEF build"
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_64
-    CEF_PLATFORM=linuxarm64
+    CEF_PLATFORM=linux64
     JOGAMP_ARCH=amd64
     CMAKE_ARGS="-DPROJECT_ARCH=amd64"
 fi
