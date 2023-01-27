@@ -34,6 +34,7 @@ else
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_64
     CEF_PLATFORM=linuxaarch64
     JOGAMP_ARCH=amd64
+    CMAKE_ARGS="-DPROJECT_ARCH=amd64"
 fi
 
 if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_$CEF_PLATFORM ]]; then
@@ -101,7 +102,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' $CMAKE_ARGS -DCEF_PLATFORM=$CEF_PLATFORM -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
 
 if [ ! -f  $JCEF_BUILD_DIR/Makefile ]; then
     echo "ERROR: Did not find the generated JCEF Makefile"
