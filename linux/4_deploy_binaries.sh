@@ -8,21 +8,37 @@ read -r BRANCH<../branch.txt
 
 CEF_RELEASE_DIR_64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux64"`
 CEF_RELEASE_DIR_32=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux32"`
+CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxarm64"`
+
 
 if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
     if [ ! -d "$CEF_RELEASE_DIR_32" ]; then
-        echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
-        exit 1
+        if [ ! -d "$CEF_RELEASE_DIR_ARM64" ]; then
+            echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
+            exit
+        else
+            echo "Found arm64 CEF build"
+            ARCH_NAME="arm64"
+            CEF_PLATFORM=linuxarm64
+            CEF_PLATFORM_DEPLOY=arm64
+            CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
+        fi
     else
+        echo "Found x86 CEF build"
         CEF_RELEASE_DIR=$CEF_RELEASE_DIR_32
         BITNESS=32
         BITNESS_32ONLY=32
+        ARCH_NAME="x86"
+        CEF_PLATFORM=linux32
         JOGAMP_ARCH=i586
     fi
 else
+    echo "Found x64 CEF build"
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_64
     BITNESS=64
     JOGAMP_ARCH=amd64
+    ARCH_NAME="x64"
+    CEF_PLATFORM=linux64
 fi
 
 if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_linux$BITNESS ]]; then
@@ -54,12 +70,12 @@ else
     BUILD_TYPE="Release"
 fi
 
-echo "Found $BITNESS bit CEF version $CEF_RELEASE_VERSION (cleaned-up: $CEF_CLEAN_VERSION)"
-echo "Found $BITNESS bit JCEF version $JCEF_RELEASE_VERSION which will be our artifact version"
+echo "Found $ARCH_NAME CEF version $CEF_RELEASE_VERSION (cleaned-up: $CEF_CLEAN_VERSION)"
+echo "Found $ARCH_NAME JCEF version $JCEF_RELEASE_VERSION which will be our artifact version"
 echo "The build to be packaged is a $BUILD_TYPE build"
 
-if [ ! -f "$OUTPUT_DIR/jcef-binaries-linux$BITNESS.jar" ]; then
-    echo "ERROR: Did not find jcef-binaries-linux$BITNESS.jar"
+if [ ! -f "$OUTPUT_DIR/jcef-binaries-$CEF_PLATFORM.jar" ]; then
+    echo "ERROR: Did not find jcef-binaries-$CEF_PLATFORM.jar"
     exit 1
 fi
 
@@ -76,7 +92,7 @@ fi
 
 VERSION=$JCEF_RELEASE_VERSION-$QUALIFIER
 
-echo "Deploying $BITNESS bit JCEF binary package for Linux in version $VERSION to Nexus"
+echo "Deploying $ARCH_NAME JCEF binary package for Linux in version $VERSION to Nexus"
 
 echo -n "Please enter the username: "
 read NEXUS_USER
@@ -93,4 +109,4 @@ if [ -z "$NEXUS_PASS" ]; then
     exit
 fi
 
-mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-linux$BITNESS_32ONLY -Dfile=$OUTPUT_DIR/jcef-binaries-linux$BITNESS.jar -Dversion=$VERSION
+mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-linux-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-linux$CEF_PLATFORM.jar -Dversion=$VERSION

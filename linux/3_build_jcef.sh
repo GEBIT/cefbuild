@@ -21,6 +21,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
             JOGAMP_ARCH=aarch64
             CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
             CMAKE_ARGS="-DPROJECT_ARCH=arm64"
+            export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-arm64"
         fi
     else
         echo "Found x86 CEF build"
