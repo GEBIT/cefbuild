@@ -20,7 +20,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
             CEF_PLATFORM=linuxarm64
             JOGAMP_ARCH=aarch64
             CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
-            CMAKE_ARGS="-DPROJECT_ARCH=arm64"
+            CMAKE_ARGS="-DPROJECT_ARCH=arm64 --toolchain $(pwd)/cmake_toolchain_arm64"
             export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-arm64"
         fi
     else
@@ -103,15 +103,10 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
-
-if [ ! -f  $JCEF_BUILD_DIR/Makefile ]; then
-    echo "ERROR: Did not find the generated JCEF Makefile"
-    exit 1
-fi
+bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Ninja' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
 
 echo "Building JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && make -j8"
+bash -l -c "cd $JCEF_BUILD_DIR && ninja -j8"
 
 if [[ $? == 0 ]]; then
     echo "Successful build!"
