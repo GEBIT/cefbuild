@@ -7,7 +7,7 @@ read -r BRANCH<../branch.txt
 
 CEF_RELEASE_DIR_64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux64"`
 CEF_RELEASE_DIR_32=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linux32"`
-CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxaarch64"`
+CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_linuxarm64"`
 
 
 if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
@@ -36,7 +36,7 @@ else
     JOGAMP_ARCH=amd64
 fi
 
-if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_linux$BITNESS ]]; then
+if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_linux.+ ]]; then
     CEF_RELEASE_VERSION=${BASH_REMATCH[1]}
 else
     echo "ERROR: Failed to extract CEF version number"
