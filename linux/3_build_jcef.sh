@@ -17,7 +17,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
             exit 1
         else
             echo "Found arm64 CEF build"
-            BITNESS=64
+            CEF_PLATFORM=linux64
             JOGAMP_ARCH=aarch64
             CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
             CMAKE_ARGS="-DPROJECT_ARCH=arm64"
@@ -25,18 +25,18 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
     else
         echo "Found x86 CEF build"
         CEF_RELEASE_DIR=$CEF_RELEASE_DIR_32
-        BITNESS=32
+        CEF_PLATFORM=linux32
         JOGAMP_ARCH=i586
         CMAKE_ARGS="-DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DPROJECT_ARCH=x86"
     fi
 else
     echo "Found x64 CEF build"
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_64
-    BITNESS=64
+    CEF_PLATFORM=linuxaarch64
     JOGAMP_ARCH=amd64
 fi
 
-if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_linux.+ ]]; then
+if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_$CEF_PLATFORM ]]; then
     CEF_RELEASE_VERSION=${BASH_REMATCH[1]}
 else
     echo "ERROR: Failed to extract CEF version number"
@@ -49,15 +49,15 @@ else
     BUILDTYPE="Release"
 fi
 
-echo "Found binary $BITNESS bit $JOGAMP_ARCH CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+echo "Found binary $CEF_PLATFORM CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
 if ! [ -x "$(command -v docker)" ]; then
-    if [ $BITNESS == 64 ]; then
+    if [ $CEF_PLATFORM == 'linux64' ]; then
         echo "You seem to be inside of a Docker container. The 64 bit JCEF build may NOT be performed inside the container necessary for 32 bit building! This script thus expects you to run 64 bit builds on bare metal."
         exit 1
     fi
 else
-    if [ $BITNESS == 32 ]; then
+    if [ $CEF_PLATFORM == 'linux32' ]; then
         echo "You seem to be outside of a Docker container. Will now attempt to run this script inside the 32bit-jcef-build docker image (which is expected to have been built already on the local system)."
         ./32bit-docker/run.sh $(dirname $(readlink -f $0))/$(basename $0)
         if [[ $? == 0 ]]; then
@@ -101,7 +101,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' $CMAKE_ARGS -DCEF_PLATFORM=linux$BITNESS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $JCEF_BUILD_DIR && cmake -G 'Unix Makefiles' $CMAKE_ARGS -DCEF_PLATFORM=$CEF_PLATFORM -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
 
 if [ ! -f  $JCEF_BUILD_DIR/Makefile ]; then
     echo "ERROR: Did not find the generated JCEF Makefile"
@@ -130,8 +130,8 @@ mkdir $JOGL_DIR
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-linux-$JOGAMP_ARCH.jar "*.so" -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-linux-$JOGAMP_ARCH.jar "*.so" -d $JOGL_DIR/
 
-echo "Packaging jcef-binaries-linux$BITNESS"
-bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-linux$BITNESS.jar ./*"
+echo "Packaging jcef-binaries-$CEF_PLATFORM"
+bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-$CEF_PLATFORM.jar ./*"
 
 echo "Extracting version number from version header file"
 cat $JCEF_DIR/native/jcef_version.h | grep "define JCEF_VERSION" | cut -d'"' -f2 | cut -d'+' -f1 > $OUTPUT_DIR/jcef_version.txt
