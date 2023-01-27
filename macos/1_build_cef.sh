@@ -54,7 +54,7 @@ read -p "Hit ENTER to start!"
 
 rm -rf ./out
 
-export GN_DEFINES="use_allocator=none $BUILD_GN use_sysroot=true proprietary_codecs=true ffmpeg_branding=Chrome"
+export GN_DEFINES="$BUILD_GN use_sysroot=true proprietary_codecs=true ffmpeg_branding=Chrome"
 
 echo "Downloading automate-git.py script from CEF repository"
 # Downloading the file from the master branch is the way to go according to the CEF build documentation, even if not building master, but a maintenance branch
