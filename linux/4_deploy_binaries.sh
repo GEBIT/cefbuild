@@ -109,4 +109,4 @@ if [ -z "$NEXUS_PASS" ]; then
     exit
 fi
 
-mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-linux-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-linux$CEF_PLATFORM.jar -Dversion=$VERSION
+mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-linux-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-$CEF_PLATFORM.jar -Dversion=$VERSION
