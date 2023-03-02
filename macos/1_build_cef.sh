@@ -40,13 +40,13 @@ if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ] || [ "$4" =
     fi
 else
     BUILDTYPE="$BUILDTYPE for x64"
+    export CEF_ENABLE_AMD64=1
     AUTOMATE_FLAGS="$AUTOMATE_FLAGS --x64-build"
     if [[ $(pwd) =~ .*arm64.* ]]; then
         echo "You chose an x64 build, but apparently this directory is for arm64 builds. Sure this is right?"
         read -p "Hit ENTER to ignore this warning, or abort now using CTRL-C!"
     fi
 fi
-
 
 read -r BRANCH<../branch.txt
 echo "You are about to perform $BUILDTYPE of branch $BRANCH."
