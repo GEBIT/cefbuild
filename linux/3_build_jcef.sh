@@ -45,8 +45,12 @@ else
     exit 1
 fi
 
-if [ -d "$CEF_RELEASE_DIR/Debug" ]; then
-    BUILDTYPE="Debug"
+# Relatively big binary is an indication of a debug build ('debug' as in 'has symbols', not actually a real debug build)
+if [ $(stat -c%s "$CEF_RELEASE_DIR/Release/libcef.so") -gt 200000000 ]; then
+     BUILDTYPE="Debug"
+    cp -r $CEF_RELEASE_DIR/Release $CEF_RELEASE_DIR/Debug
+    # We actually want to create a real debug build of JCEF, because that's not such a size problem as with CEF, but
+    # debug builds of JCEF expect CEF to be in a Debug directory. Hence we do the copying here.
 else
     BUILDTYPE="Release"
 fi

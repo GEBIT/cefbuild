@@ -12,8 +12,13 @@ cd "$(dirname "$0")"
 
 if [ "$1" == "debug" ] || [ "$2" == "debug" ] || [ "$3" == "debug" ] || [ "$4" == "debug" ]; then
     BUILDTYPE="debug"
-    BUILD_GN="is_official_build=false is_debug=true symbol_level=2 chrome_pgo_phase=0 is_cfi=false"
-    AUTOMATE_FLAGS="--no-release-build"
+    BUILD_GN="is_official_build=true symbol_level=1 chrome_pgo_phase=0 is_cfi=false"
+    AUTOMATE_FLAGS="--no-debug-build"
+    # Note that the "debug" build of CEF is actually not a real debug build, but still a release build just with
+    # added basic symbols - this is because "real" debug builds of Chromium blow up the binary size to 10x 
+    # (more than one gigabyte) and make the binary entirely impractical to handle - it also showed to throw 
+    # linker errors due to an exhaustion of the TLS space. Thus what we call "debug" here is just a normal 
+    # CEF build with added symbols, which is what we usually need for debug purposes to symbolize backtraces.
 else
     BUILDTYPE="release"
     BUILD_GN="is_official_build=true symbol_level=0 chrome_pgo_phase=0 is_cfi=false"
