@@ -64,7 +64,7 @@ fi
 JCEF_RELEASE_VERSION=$(cat $JCEF_VERSION_FILE)
 
 # Really big binary is a safe indication of a debug build
-if [ $(stat -c%s "$OUTPUT_DIR/jcef-binaries-linux/jcef/libcef.so") -gt 200000000 ]; then
+if [ $(stat -c%s "$OUTPUT_DIR/jcef-binaries-linux/jcef/libcef.so") -gt 400000000 ]; then
     BUILD_TYPE="Debug"
 else
     BUILD_TYPE="Release"
