@@ -1,7 +1,5 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-#!/bin/bash
-cd "$(dirname "$0")"
 
 # By default, this script will build full release builds.
 # This can be modified by some possible parameters provided to this script:
