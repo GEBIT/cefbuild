@@ -9,6 +9,6 @@ echo "Do you want to continue?"
 read -p "Hit ENTER to start!"
 
 rm -rf ./out
-rm -rf ../../chromium_git/chromium/out
+rm -rf ../../chromium_git/chromium/src/out
 
 echo "Delete completed!"
