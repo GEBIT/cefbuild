@@ -96,6 +96,11 @@ mkdir $JOGL_DIR
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-windows-amd64.jar natives/windows-amd64/gluegen_rt.dll -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-windows-amd64.jar natives/windows-amd64/jogl_desktop.dll natives/windows-amd64/jogl_mobile.dll natives/windows-amd64/nativewindow_awt.dll natives/windows-amd64/nativewindow_win32.dll natives/windows-amd64/newt_head.dll -d $JOGL_DIR/
 
+echo "Copying CEF header files to output directory"
+CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
+mkdir $CEF_HEADER_DIR
+cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
+
 echo "Packaging jcef-binaries-windows"
 # zip command isn't even present in GIT Bash on Windows :( so we'll use a powershell workaround
 bash -l -c "cd $JCEF_BINARIES_DIR && powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('.', '../jcef-binaries-windows.jar'); }\""

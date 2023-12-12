@@ -131,6 +131,11 @@ mkdir $JOGL_DIR
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-linux-$JOGAMP_ARCH.jar "*.so" -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-linux-$JOGAMP_ARCH.jar "*.so" -d $JOGL_DIR/
 
+echo "Copying CEF header files to output directory"
+CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
+mkdir $CEF_HEADER_DIR
+cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
+
 echo "Packaging jcef-binaries-$CEF_PLATFORM"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-$CEF_PLATFORM.jar ./*"
 

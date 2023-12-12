@@ -44,14 +44,16 @@ echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION a
 
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-macos
+JCEF_SUBDIR=$JCEF_BINARIES_DIR/jcef
 
 echo "Cleaning output directory"
 rm -rf $OUTPUT_DIR
 mkdir $OUTPUT_DIR
 mkdir $JCEF_BINARIES_DIR
+mkdir $JCEF_SUBDIR
 echo "Copying CEF distribution to output directory"
 cp -r $CEF_RELEASE_DIR $OUTPUT_DIR
-cp -r "$CEF_RELEASE_DIR/Release/Chromium Embedded Framework.framework" $JCEF_BINARIES_DIR/
+cp -r "$CEF_RELEASE_DIR/Release/Chromium Embedded Framework.framework" $JCEF_SUBDIR/
 
 JCEF_DIR=$BASEDIR/java-cef
 JCEF_THIRDPARTY_DIR=$JCEF_DIR/third_party
@@ -92,11 +94,12 @@ fi
 echo "Copying JCEF binaries to output directories"
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef.jar $OUTPUT_DIR/jcef-classes.jar
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
-cp $JCEF_BUILD_DIR/native/$BUILDTYPE/libjcef.dylib $JCEF_BINARIES_DIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper.app" $JCEF_BINARIES_DIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (GPU).app" $JCEF_BINARIES_DIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Plugin).app" $JCEF_BINARIES_DIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Renderer).app" $JCEF_BINARIES_DIR/
+
+cp $JCEF_BUILD_DIR/native/$BUILDTYPE/libjcef.dylib $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper.app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (GPU).app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Plugin).app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Renderer).app" $JCEF_SUBDIR/
 
 echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl
@@ -105,6 +108,11 @@ unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-macosx-universal.jar
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/gluegen-rt-natives-macosx-universal.jar "*.dylib" -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-macosx-universal.jar "*.jnilib" -d $JOGL_DIR/
 unzip -j $JCEF_THIRDPARTY_DIR/jogamp/jar/jogl-all-natives-macosx-universal.jar "*.dylib" -d $JOGL_DIR/
+
+echo "Copying CEF header files to output directory"
+CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
+mkdir $CEF_HEADER_DIR
+cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
 
 echo "Packaging jcef-binaries-macos"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-macos.jar ./*"
