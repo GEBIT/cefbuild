@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 # This builds JCEF and is intended to be executed in a GIT Bash on Windows
 BASEDIR=./../../
 VSDEVCMD_BAT="C:\Program^ Files\Microsoft^ Visual^ Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
-
+CMAKE_VS_VERSION="Visual Studio 17 2022"
 
 read -r BRANCH<../branch.txt
 
@@ -39,10 +39,10 @@ echo "Preparing to build libcef_dll_wrapper"
 WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
 rm -rf $WRAPPER_BUILD_DIR
 mkdir $WRAPPER_BUILD_DIR
-bash -l -c "cd $WRAPPER_BUILD_DIR && cmake -G 'Ninja' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"$CMAKE_VS_VERSION\" .."
 
 echo "Building libcef_dll_wrapper"
-bash -l -c "cd $WRAPPER_BUILD_DIR && ninja -j8"
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & msbuild cef.sln /p:configuration=$BUILDTYPE_LOWERCASE"
 if [[ $? == 0 ]]; then
     echo "Successful libcef_dll_wrapper build!"
 else
@@ -83,7 +83,7 @@ rm -rf $JCEF_BUILD_DIR
 mkdir $JCEF_BUILD_DIR
 
 echo "Preparing to build JCEF"
-bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"Visual Studio 17 2022\" -D CEF_VERSION=$CEF_RELEASE_VERSION ..\""
+bash -l -c "cd $JCEF_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"$CMAKE_VS_VERSION\" -D CEF_VERSION=$CEF_RELEASE_VERSION ..\""
 
 if [ ! -f  $JCEF_BUILD_DIR/jcef.sln ]; then
     echo "ERROR: Did not find the generated JCEF Solution File"

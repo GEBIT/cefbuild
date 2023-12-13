@@ -22,6 +22,7 @@ else
     BUILD_GN="is_official_build=true symbol_level=0 chrome_pgo_phase=0 is_cfi=false"
     AUTOMATE_FLAGS="--no-debug-build"
 fi
+BUILDTYPE_PLAIN=$BUILDTYPE
 if [ "$1" == "incremental" ] || [ "$2" == "incremental" ] || [ "$3" == "incremental" ] || [ "$4" == "incremental" ]; then
     BUILDTYPE="an incremental $BUILDTYPE"
     export CEF_SKIP_PATCHES=true
@@ -79,7 +80,9 @@ sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/
 # For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
 python3 automate-git.py $AUTOMATE_FLAGS --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
 
-if [ "$BUILDTYPE" == "release" ]; then
+# For some odd reason the CEF build does not honor symbol_level=0 anymore, it still adds some very basic debug symbols
+# Let's get rid of them for release builds
+if [ "$BUILDTYPE_PLAIN" == "release" ]; then
     echo "Stripping libcef.so from all unneeded symbols"
     $STRIP_CMD --strip-unneeded ./../../chromium_git/chromium/src/cef/binary_distrib/*/Release/libcef.so
 fi
