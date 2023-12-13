@@ -156,7 +156,7 @@ cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
 echo "Copying libcef_dll_wrapper to output directory"
 CEF_WRAPPER_DIR=$JCEF_BINARIES_DIR/libcef_dll_wrapper
 mkdir $CEF_WRAPPER_DIR
-cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/$BUILDTYPE/* $CEF_WRAPPER_DIR
+cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/*.a $CEF_WRAPPER_DIR
 
 echo "Packaging jcef-binaries-$CEF_PLATFORM"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-$CEF_PLATFORM.jar ./*"
