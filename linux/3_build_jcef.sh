@@ -46,7 +46,7 @@ else
 fi
 
 # Relatively big binary is an indication of a debug build ('debug' as in 'has symbols', not actually a real debug build)
-if [ $(stat -c%s "$CEF_RELEASE_DIR/Release/libcef.so") -gt 200000000 ]; then
+if [ $(stat -c%s "$CEF_RELEASE_DIR/Release/libcef.so") -gt 300000000 ]; then
      BUILDTYPE="Debug"
     cp -r $CEF_RELEASE_DIR/Release $CEF_RELEASE_DIR/Debug
     # We actually want to create a real debug build of JCEF, because that's not such a size problem as with CEF, but
@@ -80,10 +80,10 @@ echo "Preparing to build libcef_dll_wrapper"
 WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
 rm -rf $WRAPPER_BUILD_DIR
 mkdir $WRAPPER_BUILD_DIR
-bash -l -c "cd $WRAPPER_BUILD_DIR && cmake -G 'Ninja' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmake -G 'Ninja' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE .."
 
 echo "Building libcef_dll_wrapper"
-bash -l -c "cd $WRAPPER_BUILD_DIR && ninja -j8"
+bash -l -c "cd $WRAPPER_BUILD_DIR && ninja -j8 libcef_dll_wrapper"
 if [[ $? == 0 ]]; then
     echo "Successful libcef_dll_wrapper build!"
 else
