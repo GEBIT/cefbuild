@@ -39,10 +39,10 @@ echo "Preparing to build libcef_dll_wrapper"
 WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
 rm -rf $WRAPPER_BUILD_DIR
 mkdir $WRAPPER_BUILD_DIR
-bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"$CMAKE_VS_VERSION\" .."
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"$CMAKE_VS_VERSION\" ..\""
 
 echo "Building libcef_dll_wrapper"
-bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & msbuild cef.sln /p:configuration=$BUILDTYPE_LOWERCASE"
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & msbuild cef.sln /t:libcef_dll_wrapper /p:configuration=$BUILDTYPE_LOWERCASE\""
 if [[ $? == 0 ]]; then
     echo "Successful libcef_dll_wrapper build!"
 else
@@ -121,7 +121,7 @@ cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
 echo "Copying libcef_dll_wrapper to output directory"
 CEF_WRAPPER_DIR=$JCEF_BINARIES_DIR/libcef_dll_wrapper
 mkdir $CEF_WRAPPER_DIR
-cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/$BUILDTYPE/* $CEF_WRAPPER_DIR
+cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/$BUILDTYPE/*.lib $CEF_WRAPPER_DIR
 
 echo "Packaging jcef-binaries-windows"
 # zip command isn't even present in GIT Bash on Windows :( so we'll use a powershell workaround
