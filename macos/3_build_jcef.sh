@@ -8,6 +8,8 @@ read -r BRANCH<../branch.txt
 CEF_RELEASE_DIR_X64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosx64"`
 CEF_RELEASE_DIR_ARM64=`find $BASEDIR/chromium_git/chromium/src/cef/binary_distrib -type d -name "cef_binary_*.$BRANCH.*_macosarm64"`
 
+XCODE_CODE_SIGNING_PARAMS="CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO"
+
 if [ ! -d "$CEF_RELEASE_DIR_X64" ]; then
     if [ ! -d "$CEF_RELEASE_DIR_ARM64" ]; then
         echo "ERROR: Did not find a matching CEF branch release build in binary_distrib directory"
@@ -16,14 +18,14 @@ if [ ! -d "$CEF_RELEASE_DIR_X64" ]; then
         echo "Found arm64 CEF build"
         ARCH_PARAM="-DPROJECT_ARCH=arm64"
         ARCH_NAME="arm64"
-        XCODE_PARAM="-target ALL_BUILD"
+        XCODE_TARGET_PARAM="-target"
         CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
     fi
 else
     echo "Found x64 CEF build"
     ARCH_PARAM="-DPROJECT_ARCH=x86_64"
     ARCH_NAME="x64"
-    XCODE_PARAM="-scheme ALL_BUILD"
+    XCODE_TARGET_PARAM="-scheme"
     CEF_RELEASE_DIR=$CEF_RELEASE_DIR_X64
 fi
 
@@ -41,6 +43,28 @@ else
 fi
 
 echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
+
+# libcef_dll_wrapper is not strictly necessary for JCEF, but we build it nevertheless in this script because
+# the build process is very similar, thus we can re-use a lot of the infrastructure
+echo "Preparing to build libcef_dll_wrapper"
+WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
+rm -rf $WRAPPER_BUILD_DIR
+mkdir $WRAPPER_BUILD_DIR
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmake -G Xcode $ARCH_PARAM -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+
+if [ ! -d $WRAPPER_BUILD_DIR/cef.xcodeproj ]; then
+    echo "ERROR: Did not find the generated CEF XCode Project"
+    exit
+fi
+
+echo "Building libcef_dll_wrapper"
+xcodebuild $XCODE_CODE_SIGNING_PARAMS -project $WRAPPER_BUILD_DIR/cef.xcodeproj $XCODE_TARGET_PARAM libcef_dll_wrapper -configuration $BUILDTYPE
+if [[ $? == 0 ]]; then
+    echo "Successful libcef_dll_wrapper build!"
+else
+    echo "libcef_dll_wrapper BUILD FAILED!"
+    exit
+fi
 
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-macos
@@ -83,11 +107,11 @@ if [ ! -d $JCEF_BUILD_DIR/jcef.xcodeproj ]; then
 fi
 
 echo "Building JCEF"
-xcodebuild CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -project $JCEF_BUILD_DIR/jcef.xcodeproj $XCODE_PARAM -configuration $BUILDTYPE
+xcodebuild $XCODE_CODE_SIGNING_PARAMS -project $JCEF_BUILD_DIR/jcef.xcodeproj $XCODE_TARGET_PARAM ALL_BUILD -configuration $BUILDTYPE
 if [[ $? == 0 ]]; then
-    echo "Successful build!"
+    echo "Successful JCEF build!"
 else
-    echo "BUILD FAILED!"
+    echo "JCEF BUILD FAILED!"
     exit
 fi
 
@@ -113,6 +137,11 @@ echo "Copying CEF header files to output directory"
 CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
 mkdir $CEF_HEADER_DIR
 cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
+
+echo "Copying libcef_dll_wrapper to output directory"
+CEF_WRAPPER_DIR=$JCEF_BINARIES_DIR/libcef_dll_wrapper
+mkdir $CEF_WRAPPER_DIR
+cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/$BUILDTYPE/* $CEF_WRAPPER_DIR
 
 echo "Packaging jcef-binaries-macos"
 bash -l -c "cd $JCEF_BINARIES_DIR && zip -r ../jcef-binaries-macos.jar ./*"

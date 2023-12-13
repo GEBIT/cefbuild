@@ -33,6 +33,23 @@ fi
 
 echo "Found binary CEF $BUILDTYPE distribution in version $CEF_RELEASE_VERSION at $CEF_RELEASE_DIR"
 
+# libcef_dll_wrapper is not strictly necessary for JCEF, but we build it nevertheless in this script because
+# the build process is very similar, thus we can re-use a lot of the infrastructure
+echo "Preparing to build libcef_dll_wrapper"
+WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
+rm -rf $WRAPPER_BUILD_DIR
+mkdir $WRAPPER_BUILD_DIR
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmake -G 'Ninja' $CMAKE_ARGS -DCMAKE_BUILD_TYPE=$BUILDTYPE -DCEF_VERSION=$CEF_RELEASE_VERSION .."
+
+echo "Building libcef_dll_wrapper"
+bash -l -c "cd $WRAPPER_BUILD_DIR && ninja -j8"
+if [[ $? == 0 ]]; then
+    echo "Successful libcef_dll_wrapper build!"
+else
+    echo "libcef_dll_wrapper BUILD FAILED!"
+    exit
+fi
+
 OUTPUT_DIR=./out
 JCEF_BINARIES_DIR=$OUTPUT_DIR/jcef-binaries-windows
 JCEF_SUBDIR=$JCEF_BINARIES_DIR/jcef
@@ -100,6 +117,11 @@ echo "Copying CEF header files to output directory"
 CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
 mkdir $CEF_HEADER_DIR
 cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
+
+echo "Copying libcef_dll_wrapper to output directory"
+CEF_WRAPPER_DIR=$JCEF_BINARIES_DIR/libcef_dll_wrapper
+mkdir $CEF_WRAPPER_DIR
+cp -r $CEF_RELEASE_DIR/build/libcef_dll_wrapper/$BUILDTYPE/* $CEF_WRAPPER_DIR
 
 echo "Packaging jcef-binaries-windows"
 # zip command isn't even present in GIT Bash on Windows :( so we'll use a powershell workaround
