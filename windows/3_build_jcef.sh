@@ -104,7 +104,10 @@ echo "Copying JCEF binaries to output directory"
 # JCEF Classes are deliberately not copied here, as those must be built only on the MacOS build machine. The classes are
 # generally cross-platform, except for one Mac-specific class which can only be built on MacOS, thus MacOS is the designated
 # build platform for the JCEF jar file.
-cp -r $JCEF_BUILD_DIR/native/Release/* $JCEF_SUBDIR/
+cp -r $JCEF_BUILD_DIR/native/$BUILDTYPE/* $JCEF_SUBDIR/
+
+# Also copy libcef.lib which is not strictly needed in JCEF usage, but in other cases of using libcef.dll...
+cp -r $CEF_RELEASE_DIR/$BUILDTYPE/libcef.lib $JCEF_SUBDIR/
 
 echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl
