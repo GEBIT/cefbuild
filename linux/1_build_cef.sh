@@ -37,6 +37,7 @@ else
 fi
 if [ "$1" == "x86" ] || [ "$2" == "x86" ] || [ "$3" == "x86" ] || [ "$4" == "x86" ]; then
     BUILDTYPE="$BUILDTYPE 32-bit"
+    STRIP_CMD=strip
 else
     BUILDTYPE="$BUILDTYPE 64-bit"
     if [ "$1" == "arm64" ] || [ "$2" == "arm64" ] || [ "$3" == "arm64" ] || [ "$4" == "arm64" ]; then
@@ -45,6 +46,7 @@ else
         export CEF_INSTALL_SYSROOT=arm64
         BUILD_GN="$BUILD_GN use_thin_lto=false"
         AUTOMATE_FLAGS="$AUTOMATE_FLAGS --arm64-build"
+        STRIP_CMD=/usr/bin/aarch64-linux-gnu-strip
         if [[ $(pwd) =~ .*x64.* ]]; then
             echo "You chose an arm64 build, but apparently this directory is for x64 builds. Sure this is right?"
             read -p "Hit ENTER to ignore this warning, or abort now using CTRL-C!"
@@ -52,6 +54,7 @@ else
     else
         BUILDTYPE="$BUILDTYPE for x64"
         AUTOMATE_FLAGS="$AUTOMATE_FLAGS --x64-build"
+        STRIP_CMD=strip
         if [[ $(pwd) =~ .*arm64.* ]]; then
             echo "You chose an x64 build, but apparently this directory is for arm64 builds. Sure this is right?"
             read -p "Hit ENTER to ignore this warning, or abort now using CTRL-C!"
@@ -75,6 +78,11 @@ sed -i "s/cef_git_url = .*/cef_git_url = 'https:\/\/github.com\/GEBIT\/cef.git'/
 
 # For some reason we need --build-target=cefsimple here, while we may not add this on MacOS and Windows without breaking the build
 python3 automate-git.py $AUTOMATE_FLAGS --build-target=cefsimple --force-build --branch=$BRANCH --download-dir=./../../chromium_git --depot-tools-dir=./../../depot_tools
+
+if [ "$BUILDTYPE" == "release" ]; then
+    echo "Stripping libcef.so from all unneeded symbols"
+    $STRIP_CMD --strip-unneeded ./../../chromium_git/chromium/src/cef/binary_distrib/*/Release/libcef.so
+fi
 
 if [ $? -eq 0 ]; then
     echo "Finished performing $BUILDTYPE build of branch $BRANCH."
