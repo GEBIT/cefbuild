@@ -39,7 +39,7 @@ echo "Preparing to build libcef_dll_wrapper"
 WRAPPER_BUILD_DIR=$CEF_RELEASE_DIR/build
 rm -rf $WRAPPER_BUILD_DIR
 mkdir $WRAPPER_BUILD_DIR
-bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -G \"$CMAKE_VS_VERSION\" ..\""
+bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & cmake -DCEF_RUNTIME_LIBRARY_FLAG=/MD -G \"$CMAKE_VS_VERSION\" ..\""
 
 echo "Building libcef_dll_wrapper"
 bash -l -c "cd $WRAPPER_BUILD_DIR && cmd.exe //C \"$VSDEVCMD_BAT & msbuild cef.sln /t:libcef_dll_wrapper /p:configuration=$BUILDTYPE_LOWERCASE\""
