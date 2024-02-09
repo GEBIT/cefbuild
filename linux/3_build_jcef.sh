@@ -153,6 +153,16 @@ CEF_HEADER_DIR=$JCEF_BINARIES_DIR/include
 mkdir $CEF_HEADER_DIR
 cp -r $CEF_RELEASE_DIR/include/* $CEF_HEADER_DIR
 
+echo "Copying CEF libcef_dll source files to output directory"
+CEF_HEADER_DIR=$JCEF_BINARIES_DIR/libcef_dll
+mkdir $CEF_HEADER_DIR
+cp -r $CEF_RELEASE_DIR/libcef_dll/* $CEF_HEADER_DIR
+
+echo "Copying CEF cmake source files to output directory"
+CEF_HEADER_DIR=$JCEF_BINARIES_DIR/cmake
+mkdir $CEF_HEADER_DIR
+cp -r $CEF_RELEASE_DIR/cmake/* $CEF_HEADER_DIR
+
 echo "Copying libcef_dll_wrapper to output directory"
 CEF_WRAPPER_DIR=$JCEF_BINARIES_DIR/libcef_dll_wrapper
 mkdir $CEF_WRAPPER_DIR
