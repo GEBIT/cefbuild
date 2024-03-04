@@ -1,6 +1,14 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
+if [ "$1" == "local" ]; then
+    DEPLOYTYPE="locally"
+    DEPLOYCMD="install:install-file"
+else
+    DEPLOYTYPE="remotely"
+    DEPLOYCMD="deploy:deploy-file"
+fi
+
 BASEDIR=./../../
 OUTPUT_DIR=./out
 
@@ -44,7 +52,7 @@ if [ ! -f "$JCEF_VERSION_FILE" ]; then
 fi
 
 # Really big binary is a safe indication of a debug build
-if [ $(stat -f%z "$OUTPUT_DIR/jcef-binaries-macos/Chromium Embedded Framework.framework/Chromium Embedded Framework") -gt 1000000000 ]; then
+if [ $(stat -f%z "$OUTPUT_DIR/jcef-binaries-macos/jcef/Chromium Embedded Framework.framework/Chromium Embedded Framework") -gt 1000000000 ]; then
     BUILD_TYPE="Debug"
 else
     BUILD_TYPE="Release"
@@ -74,21 +82,23 @@ fi
 
 VERSION=$JCEF_RELEASE_VERSION-$QUALIFIER
 
-echo "Deploying JCEF binary package for MacOS $ARCH_NAME in version $VERSION to Nexus"
+echo "Deploying JCEF binary package for MacOS $ARCH_NAME in version $VERSION $DEPLOYTYPE"
 
-echo -n "Please enter the username: "
-read NEXUS_USER
-if [ -z "$NEXUS_USER" ]; then
-    echo "ERROR: No username was provided"
-    exit
+if [ "$DEPLOYTYPE" == "remotely" ]; then
+    echo -n "Please enter the username: "
+    read NEXUS_USER
+    if [ -z "$NEXUS_USER" ]; then
+        echo "ERROR: No username was provided"
+        exit
+    fi
+
+    echo -n "Please enter the password: "
+    read -s NEXUS_PASS
+    echo ""
+    if [ -z "$NEXUS_PASS" ]; then
+        echo "ERROR: No password was provided"
+        exit
+    fi
 fi
 
-echo -n "Please enter the password: "
-read -s NEXUS_PASS
-echo ""
-if [ -z "$NEXUS_PASS" ]; then
-    echo "ERROR: No password was provided"
-    exit
-fi
-
-mvn deploy:deploy-file -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-macos-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION
+mvn $DEPLOYCMD -DgroupId=de.gebit.jcef -Dpackaging=jar -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-macos-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION
