@@ -115,6 +115,23 @@ else
     exit
 fi
 
+echo "Removing RPATH from libjcef.dylib"
+# This is necessary because the RPATH is set to some JVM directory on the build system, but
+# the JVM on the user's system will be in a different location, so we need to remove the RPATH,
+# especially since the JVMs might be incompatible (so at runtime it would maybe try to link against
+# a Java 21 JVM libjawt.dylib and then try to use other dylibs from a Java 8 JVM)
+rpath_r="^ +path ([[:print:]]+) \(offset [[:digit:]]+\)$"
+# Find the LC_RPATH commands, with two lines of trailing
+# context, and for each line look for the path to delete it.
+rpath_lib=$JCEF_BUILD_DIR/native/$BUILDTYPE/libjcef.dylib
+otool -l "$rpath_lib" | grep LC_RPATH -A2 |
+while IFS='' read -r line || [ -n "$line" ]; do
+    if [[ $line =~ $rpath_r ]]; then
+      echo $(basename $rpath_lib) deleting rpath "${BASH_REMATCH[1]}" \""$rpath_lib"\"
+      install_name_tool -delete_rpath "${BASH_REMATCH[1]}" "$rpath_lib"
+    fi
+done
+
 echo "Copying JCEF binaries to output directories"
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef.jar $OUTPUT_DIR/jcef-classes.jar
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
