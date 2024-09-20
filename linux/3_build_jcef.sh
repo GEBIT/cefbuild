@@ -21,7 +21,7 @@ if [ ! -d "$CEF_RELEASE_DIR_64" ]; then
             JOGAMP_ARCH=aarch64
             CEF_RELEASE_DIR=$CEF_RELEASE_DIR_ARM64
             CMAKE_ARGS="-DPROJECT_ARCH=arm64 --toolchain $(pwd)/cmake_toolchain_arm64"
-            export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-arm64"
+            export JAVA_HOME=$(pwd)/amazon-corretto-11.0.24.8.1-linux-aarch64
         fi
     else
         echo "Found x86 CEF build"
@@ -36,6 +36,7 @@ else
     CEF_PLATFORM=linux64
     JOGAMP_ARCH=amd64
     CMAKE_ARGS="-DPROJECT_ARCH=amd64"
+    export JAVA_HOME=$(pwd)/amazon-corretto-11.0.24.8.1-linux-x64
 fi
 
 if [[ $CEF_RELEASE_DIR =~ cef_binary_(.+)_$CEF_PLATFORM ]]; then
