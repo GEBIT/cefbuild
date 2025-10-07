@@ -137,10 +137,10 @@ cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef.jar $OUTPUT_DIR/jcef-classes.jar
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/jcef-sources.jar $OUTPUT_DIR/jcef-classes-sources.jar
 
 cp $JCEF_BUILD_DIR/native/$BUILDTYPE/libjcef.dylib $JCEF_SUBDIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper.app" $JCEF_SUBDIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (GPU).app" $JCEF_SUBDIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Plugin).app" $JCEF_SUBDIR/
-cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef Helper (Renderer).app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef_app.app/Contents/Frameworks/jcef Helper.app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef_app.app/Contents/Frameworks/jcef Helper (GPU).app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef_app.app/Contents/Frameworks/jcef Helper (Plugin).app" $JCEF_SUBDIR/
+cp -r "$JCEF_BUILD_DIR/native/$BUILDTYPE/jcef_app.app/Contents/Frameworks/jcef Helper (Renderer).app" $JCEF_SUBDIR/
 
 echo "Extracting JOGL binaries to output directory"
 JOGL_DIR=$JCEF_BINARIES_DIR/jogl
