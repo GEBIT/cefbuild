@@ -101,4 +101,4 @@ if [ "$DEPLOYTYPE" == "remotely" ]; then
     fi
 fi
 
-mvn $DEPLOYCMD -DgroupId=de.gebit.jcef -Dpackaging=jar -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-macos-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION
+mvn $DEPLOYCMD $CEFBUILD_MAVEN_PARAMS -DgroupId=de.gebit.jcef -Dpackaging=jar -Drepo.user=$NEXUS_USER -Drepo.pass=$NEXUS_PASS -DartifactId=jcef-binaries-macos-$ARCH_NAME -Dfile=$OUTPUT_DIR/jcef-binaries-macos.jar -Dversion=$VERSION
